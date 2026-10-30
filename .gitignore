@@ -1,0 +1,13 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.env
+.pytest_cache/
+.mypy_cache/
+.idea/
+.vscode/
+tickets/
+static/generated/
+*.log
+.DS_Store

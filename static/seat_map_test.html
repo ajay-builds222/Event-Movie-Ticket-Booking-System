@@ -1,0 +1,7 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Live Seat Map Test</title>
+<style>body{font-family:Arial;margin:24px}.grid{display:grid;grid-template-columns:repeat(12,44px);gap:6px}.seat{padding:10px 4px;border-radius:5px;text-align:center;background:#d8f3dc}.Locked{background:#ffe08a}.Booked{background:#ffadad}.Unavailable{background:#aaa}.Yours{background:#8ecae6}</style></head><body>
+<h2>Live Seat Map Test</h2><p>Set show ID and access token below. Open in two tabs to test updates.</p>
+<label>Show ID <input id="show" value="1"></label> <label>Token <input id="token" style="width:420px" placeholder="Paste access token"></label> <button onclick="connect()">Connect</button><p id="status"></p><div id="grid" class="grid"></div>
+<script>
+let ws;function connect(){if(ws)ws.close();const id=document.getElementById('show').value,token=document.getElementById('token').value;ws=new WebSocket(`ws://${location.hostname}:8000/ws/shows/${id}/seats?token=${encodeURIComponent(token)}`);ws.onopen=()=>status.textContent='Connected';ws.onclose=()=>status.textContent='Disconnected';ws.onmessage=e=>{const m=JSON.parse(e.data);if(m.type==='initial_map'){grid.innerHTML='';m.seats.forEach(s=>{let d=document.createElement('div');d.className='seat '+s.status;d.id='seat-'+s.seat_id;d.textContent=s.row+s.seat_number;d.title=s.category+' / '+s.status;grid.appendChild(d)})}else if(m.seat_ids){m.seat_ids.forEach(id=>{let d=document.getElementById('seat-'+id);if(d){d.className='seat '+(m.status||'Locked');d.title=m.status||'Locked'}})}}}
+</script></body></html>
